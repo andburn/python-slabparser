@@ -1,7 +1,7 @@
 import re
 import sys
 
-ins_re = r'^([a-z_]+)\s*(.+)?$'
+ins_re = r'^([a-z0-9_]+)\s*(.+)?$'
 keywords_re = r'^Keywords { (.*) }'
 uniforms_re = r'(Float|Vector|Matrix|SetTexture)\s+(\d+)\s+\[(.*)\]'
 
@@ -26,6 +26,7 @@ class Vec(object):
 		else:
 			return "vec4"
 
+
 def uniforms(constants, type, number, name):
 	if number in constants:
 		print("ERROR: %s duplicated constant" % (number))
@@ -49,6 +50,7 @@ def write_ins(dest, lhs):
 	return "%s = %s(%s);" % (dest, d.get_type(), lhs)
 
 
+# TODO r0_abs
 def instruction(ins, args):
 	out = "unknown"
 	regs = []
@@ -98,8 +100,9 @@ def instruction(ins, args):
 	elif ins == 'cmp':
 		d = Vec(regs[0])
 		out = "%s = %s >= 0.0 ? %s(%s) : %s(%s);" % (regs[0], regs[1], d.get_type(), regs[2], d.get_type(), regs[3])
-	elif ins == 'min':
-		out = write_ins(regs[0], "(%s < %s) ? %s : %s" % (regs[1],regs[2],regs[1],regs[2]))
+	elif ins == 'min' or ins == 'min_pp':
+		# assuming glsl min is same
+		out = write_ins(regs[0], "min(%s, %s)" % (regs[1],regs[2]))
 	elif ins == 'texld' or ins == 'texld_pp':
 		out = "%s = texture2D(%s, vec2(%s));" % (regs[0], regs[2], regs[1])
 	else:
@@ -116,20 +119,37 @@ def parse_line(line):
 	return out
 
 
+def parse_file(file):
+	shader_flag = False
+	with open(file) as f:
+		for line in f.readlines():
+			begin = re.match('\"(p|v)s', line)
+			if begin:
+				if begin.group(1) == 'v':
+					print('// Vertex')
+				else:
+					print('// Pixel')
+				shader_flag = True
+				continue
+			if re.match('\"$', line):
+				shader_flag = False
+				print('// End')
+			if shader_flag and line.strip():
+				print(parse_line(line))
+
+
 def main():
 	if len(sys.argv) != 2:
 		print("usage: chasm.py <file>")
-		return
-	with open(sys.argv[1]) as f:
-		constants = {}
-		for line in f.readlines():
-			res = re.match(uniforms_re, line)
-			if res:
-				uniforms(constants, res.group(1), res.group(2), res.group(3))
-			else:
-				print(parse_line(line))
-		for k in sorted(constants.keys()):
-			print("vec4 c%s = vec4(%s);" % (k,constants[k]))
+		sys.exit(2)
+	try:
+		parse_file(sys.argv[1])
+	except FileNotFoundError as e:
+		print(e)
+		sys.exit(1)
+	except EnvironmentError as e:
+		print(e)
+		sys.exit(1)
 
 
 if __name__ == "__main__":
