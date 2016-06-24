@@ -16,8 +16,16 @@ keywords = {
 	"Vector": "VECTOR",
 	"Float": "FLOAT",
 	"Fallback": "FALLBACK",
+	"CustomEditor": "CUSTOMEDITOR",
 	"2D": "2D",
-	"Color": "COLOR"
+	"Color": "COLOR",
+	"Off": "OFF",
+	"BindChannels": "BINDCHANNELS",
+	"Vertex": "VERTEX",
+	"TexCoord": "TEXCOORD",
+	"TexCoord0": "TEXCOORD0",
+	"TexCoord1": "TEXCOORD1",
+	"Name": "NAME"
 }
 
 tokens = (
@@ -38,6 +46,7 @@ tokens = (
 # double quoted multi-line strings
 def t_STRING(t):
 	r'"[\n_0-9a-zA-Z\-,\s\/\(\)\[\]\.]+"'
+	t.value = t.value[1:-1]
 	return t
 
 
