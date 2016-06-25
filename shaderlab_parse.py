@@ -1,6 +1,9 @@
 import ply.yacc as yacc
 import shaderlab_lex
-from shaderlab import Shader, Property, SubShader, FallBack, CustomEditor, Pair
+from shaderlab import (
+	Shader, Property, SubShader, FallBack, CustomEditor, Pair, Pass, Program,
+	SubProgram, RegisterEntry
+)
 
 
 tokens = shaderlab_lex.tokens
@@ -60,17 +63,17 @@ def p_subshader_subsections(p):
 
 def p_subshader_subsection_tags(p):
 	'''subshader_subsection : tag_block'''
-	p[0] = { 'tags': p[1] }
+	p[0] = p[1]
 
 def p_subshader_subsection_pass(p):
 	'''subshader_subsection : pass_block'''
-	p[0] = { 'passes': p[1] }
+	p[0] = p[1]
 
 # Pass sections
 
 def p_pass_block(p):
 	'''pass_block : PASS LBRACE pass_sections RBRACE'''
-	p[0] = p[3]
+	p[0] = Pass(p[3])
 
 def p_pass_sections(p):
 	'''pass_sections : pass_sections pass_section
@@ -103,13 +106,13 @@ def p_pass_section_state(p):
 	'''pass_section : IDENT IDENT
 	                | IDENT value
 					| IDENT STRING'''
-	p[0] = p[1] + str(p[2])
+	p[0] = Pair(p[1], p[2])
 
 # TODO select vp and fp
 # for unpacked shaders (would be CGPROGRAM in regular shaderlab)
 def p_pass_section_program(p):
 	'''pass_section : PROGRAM STRING LBRACE subprograms RBRACE'''
-	p[0] = p[4]
+	p[0] = Program(p[2], p[4])
 
 # BindChannels
 
@@ -185,8 +188,7 @@ def p_subprograms(p):
 
 def p_subprogram(p):
 	'''subprogram : SUBPROGRAM STRING LBRACE subprogram_defs RBRACE'''
-	# SubProgram(p[2])
-	p[0] = p[4]
+	p[0] = SubProgram(p[2], p[4])
 
 def p_subprogram_defs(p):
 	'''subprogram_defs : subprogram_defs subprogram_def
@@ -199,14 +201,14 @@ def p_subprogram_defs(p):
 
 def p_subprogram_def_bind(p):
 	'''subprogram_def : BIND STRING keyword'''
-	p[0] = p[2] + p[3]
+	p[0] = Pair(p[2], p[3])
 
 # TODO number is int really
 # TODO SetTexture different
 def p_subprogram_def_reg(p):
 	'''subprogram_def : keyword NUMBER LBRACKET IDENT RBRACKET
 	                  | IDENT NUMBER LBRACKET IDENT RBRACKET 2D NUMBER'''
-	p[0] = p[1] + str(p[2]) + p[4]
+	p[0] = RegisterEntry(p[4], p[2], p[1])
 
 def p_subprogram_def_asm(p):
 	'''subprogram_def : STRING'''
