@@ -1,8 +1,7 @@
 import ply.yacc as yacc
-import shaderlab_lex
 from shaderlab import (
-	Shader, Property, SubShader, FallBack, CustomEditor, Pair, Pass, Program,
-	SubProgram, RegisterEntry
+	shaderlab_lex, Shader, Property, SubShader, FallBack, CustomEditor, Pair,
+	Pass, Program, SubProgram, RegisterEntry
 )
 
 

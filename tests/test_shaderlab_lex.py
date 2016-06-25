@@ -1,5 +1,6 @@
-import shaderlab_lex
 import pytest
+from shaderlab import shaderlab_lex
+
 
 # lexer tests
 
@@ -11,7 +12,7 @@ def test_basic_lex_count(basic_shader):
 def test_basic_lex_types(basic_shader):
 	tokens = shaderlab_lex.tokenize(basic_shader)
 	types = count_tokens_by_type(tokens)
-	assert len(types) == 24
+	assert len(types) == 25
 	assert types['STRING'] == 20
 
 
@@ -23,7 +24,7 @@ def test_uber_lex_count(uber_shader):
 def test_uber_lex_types(uber_shader):
 	tokens = shaderlab_lex.tokenize(uber_shader)
 	types = count_tokens_by_type(tokens)
-	assert len(types) == 27
+	assert len(types) == 31
 	assert types['STRING'] == 41
 
 

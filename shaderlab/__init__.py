@@ -1,10 +1,10 @@
-from enum import Enum
+from enum import IntEnum
 
-class ProgramType(Enum):
+class ProgramType(IntEnum):
 	VERTEX = 0
 	FRAGMENT = 1
 
-class ProgramFormat(Enum):
+class ProgramFormat(IntEnum):
 	OPENGL = 0
 	D3D9 = 1
 	D3D11 = 2
