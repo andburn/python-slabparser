@@ -1,3 +1,3 @@
-## chasm
+## SLAB (**WIP**)
 
-An ASM shader transpiler **WIP**
+A python module to extract packed Unity ShaderLab shaders.
