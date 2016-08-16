@@ -1,5 +1,6 @@
 import ctypes
 from ctypes import Structure, Union, POINTER
+from .parser import Parser
 
 
 class Error(Structure):
@@ -152,7 +153,7 @@ class ParseData(Structure):
 		("symbol_count", ctypes.c_int),
 		("symbols", POINTER(Symbol)),
 		("preshader", POINTER(PreShader)),
-		("malloc", ctypes.c_void_p),# MOJOSHADER_malloc malloc,
-		("free", ctypes.c_void_p),# MOJOSHADER_free free,
+		("malloc", ctypes.c_void_p), # MOJOSHADER_malloc malloc,
+		("free", ctypes.c_void_p), # MOJOSHADER_free free,
 		("malloc_data", ctypes.c_void_p)
 	]

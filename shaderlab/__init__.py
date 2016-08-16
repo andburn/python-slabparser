@@ -1,13 +1,16 @@
 from enum import IntEnum
+from .blob import Blob
 
 class ProgramType(IntEnum):
 	VERTEX = 0
 	FRAGMENT = 1
 
+
 class ProgramFormat(IntEnum):
 	OPENGL = 0
 	D3D9 = 1
 	D3D11 = 2
+
 
 class Pair:
 	def __init__(self, key, value):
@@ -17,6 +20,7 @@ class Pair:
 	def __repr__(self):
 		return 'Pair({},{})'.format(self.key, self.value)
 
+
 class RegisterEntry:
 	def __init__(self, name, position, type):
 		self.name = name
@@ -25,6 +29,7 @@ class RegisterEntry:
 
 	def __repr__(self):
 		return '[{}] {} {}'.format(self.position, self.type, self.name)
+
 
 class Shader:
 	def __init__(self, name, sections):
@@ -97,6 +102,7 @@ class Pass:
 	def __repr__(self):
 		return 'Pass() {}'.format(self.sections)
 
+
 class Program:
 	def __init__(self, type, subprograms):
 		self.subprograms = subprograms
@@ -109,6 +115,7 @@ class Program:
 
 	def __repr__(self):
 		return 'Program({})'.format(self.type)
+
 
 class SubProgram:
 	def __init__(self, format, sections):
@@ -131,6 +138,7 @@ class SubProgram:
 
 	def __repr__(self):
 		return 'SubProgram({})'.format(self.format)
+
 
 class FallBack:
 	def __init__(self, value):
