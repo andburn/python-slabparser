@@ -10,13 +10,12 @@ class LibraryNotFoundException(OSError):
 
 def load_lib(*names):
 	for name in names:
-		try:
-			libname = ctypes.util.find_library(name)
-			if libname:
-				return ctypes.CDLL(libname)
-			else:
-				dll_path = os.path.join(os.getcwd(), "lib%s.dll" % (name))
-				return ctypes.CDLL(dll_path)
+		libname = ctypes.util.find_library(name)
+		if libname:
+			return ctypes.CDLL(libname)
+		else:
+			dll_path = os.path.join(os.getcwd(), "lib%s.dll" % (name))
+			return ctypes.CDLL(dll_path)
 	raise LibraryNotFoundException("Could not load the library %r" % (names[0]))
 
 
