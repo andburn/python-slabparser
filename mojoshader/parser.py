@@ -8,6 +8,10 @@ class LibraryNotFoundException(OSError):
 	pass
 
 
+class ParseFailureError(Exception):
+	pass
+
+
 def load_lib(*names):
 	for name in names:
 		libname = ctypes.util.find_library(name)
@@ -22,8 +26,9 @@ def load_lib(*names):
 class Parser:
 	def __init__(self):
 		self.lib = load_lib("mojoshader")
+		self.mojo_parse = self.define_method()
 
-	def parse(self, data):
+	def define_method(self):
 		self.lib.MOJOSHADER_parse.argtypes = [
 			ctypes.c_char_p,
 			ctypes.c_char_p,
@@ -38,12 +43,11 @@ class Parser:
 			ctypes.c_void_p
 		]
 		self.lib.MOJOSHADER_parse.restype = ctypes.POINTER(mojoshader.ParseData)
+		return self.lib.MOJOSHADER_parse
 
-		return self.lib.MOJOSHADER_parse(
-			"glsl",
-			"main",
-			data,
-			len(data),
-			None, 0,
-			None, 0,
-			None, None, None).contents
+	def parse(self, data, profile="glsl"):
+		parse_data = self.mojo_parse(profile, "main", data, len(data),
+			None, 0, None, 0, None, None, None).contents
+		if parse_data.error_count > 0:
+			raise ParseFailureError("MojoShader parse failed")
+		return parse_data
