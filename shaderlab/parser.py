@@ -1,11 +1,6 @@
 import ply.yacc as yacc
-from shaderlab import (
-	shaderlab_lex, Shader, Property, SubShader, FallBack, CustomEditor, Pair,
-	Pass, Program, SubProgram, RegisterEntry
-)
-
-
-tokens = shaderlab_lex.tokens
+from .shaderlab import *
+from .lexer import tokens
 
 
 # start point 'Shader "Name" { ... }'
@@ -20,7 +15,7 @@ def p_shader(p):
 #   Properties*, SubShader, Fallback*, CustomEditor*
 def p_shader_subsections(p):
 	'''shader_subsections : shader_subsections shader_subsection
-	                      | shader_subsection'''
+                          | shader_subsection'''
 	if len(p) > 2:
 		p[0] = p[1]
 		p[1].append(p[2])
@@ -189,6 +184,7 @@ def p_subprogram(p):
 	'''subprogram : SUBPROGRAM STRING LBRACE subprogram_defs RBRACE'''
 	p[0] = SubProgram(p[2], p[4])
 
+
 def p_subprogram_defs(p):
 	'''subprogram_defs : subprogram_defs subprogram_def
 	                   | subprogram_def'''
@@ -201,6 +197,22 @@ def p_subprogram_defs(p):
 def p_subprogram_def_bind(p):
 	'''subprogram_def : BIND STRING keyword'''
 	p[0] = Pair(p[2], p[3])
+
+
+def p_subprogram_def_keywords(p):
+	'''subprogram_def : KEYWORDS LBRACE pkeywords RBRACE'''
+	p[0] = [p[3]]
+
+
+def p_pkeywords(p):
+	'''pkeywords : pkeywords STRING
+	             | STRING'''
+	if len(p) > 2:
+		p[0] = p[1]
+		p[1].append(p[2])
+	else:
+		p[0] = [p[1]]
+
 
 # TODO number is int really
 # TODO SetTexture different
@@ -239,8 +251,10 @@ def p_value(p):
 
 
 def p_pair(p):
-	'''pair : LPAREN STRING COMMA keyword RPAREN'''
+	'''pair : LPAREN STRING COMMA keyword LPAREN NUMBER COMMA NUMBER RPAREN RPAREN
+            | LPAREN STRING COMMA keyword RPAREN'''
 	p[0] = [p[2], p[4]]
+
 
 # TODO cant be updating this with lexer, should be seperate
 def p_keyword(p):
@@ -258,12 +272,13 @@ def p_keyword(p):
 	           | VECTOR
 	           | FLOAT
 	           | FALLBACK
+	           | RANGE
 	           | 2D
 	           | COLOR
-			   | VERTEX
-			   | TEXCOORD
-			   | TEXCOORD0
-			   | TEXCOORD1'''
+	           | VERTEX
+	           | TEXCOORD
+	           | TEXCOORD0
+	           | TEXCOORD1'''
 	p[0] = p[1]
 
 
