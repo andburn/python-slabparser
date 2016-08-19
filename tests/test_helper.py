@@ -1,6 +1,6 @@
 import os
 import io
-import shaderlab
+from shaderlab import keywords
 
 
 def read_data(file, mode="rb"):
@@ -16,7 +16,8 @@ def count_tokens_by_type(tokens):
 	types = {}
 	for t in tokens:
 		key = t.type
-		if t.value in shaderlab.keywords:
+		# count keywords separately, double check for strings not keywords
+		if t.value in keywords and t.type.upper() != "STRING":
 			key = "KEYWORD"
 		if key not in types:
 			types[key] = 0
