@@ -28,6 +28,7 @@ keywords = {
 	"Range": "RANGE"
 }
 
+
 class ProgramType(IntEnum):
 	VERTEX = 0
 	FRAGMENT = 1
@@ -74,15 +75,33 @@ class Shader:
 		self.custom_editor = merged.get('customed')
 		self.subshaders = [merged.get('subshaders')]
 
+	@property
+	def vertex_programs(self):
+		return self._shader_programs(ProgramType.VERTEX)
+
+	@property
+	def fragment_programs(self):
+		return self._shader_programs(ProgramType.FRAGMENT)
+
+	def _shader_programs(self, ptype):
+		v = []
+		# TODO must be a better way than this
+		for ss in self.subshaders:
+			for ps in ss.passes:
+				for pg in ps.programs:
+					if pg.type == ptype:
+						v = pg.subprograms
+		return v
 
 	def __repr__(self):
 		return 'Shader({})'.format(self.name)
 
 
+# TODO types should be acutal types/classes
 class Property:
 	def __init__(self, name, pair, value):
 		self.name = name
-		self.long_name = pair[0]
+		self.description = pair[0]
 		self.type = pair[1]
 		self.value = value
 
@@ -147,21 +166,25 @@ class Program:
 class SubProgram:
 	def __init__(self, format, sections):
 		self.sections = sections
+		# TODO add other formats
 		if format.strip() == 'd3d9':
 			self.format = ProgramFormat.D3D9
 		else:
 			raise NotImplementedError("{} is not implemented".format(format))
 
-		self.asm = None
+		self.code = None
 		self.constants = []
 		self.defs = []
+		self.keywords = []
 		for s in sections:
 			if isinstance(s, Pair):
 				self.defs.append(s)
 			elif isinstance(s, RegisterEntry):
 				self.constants.append(s)
+			elif isinstance(s, list):
+				self.keywords = s
 			elif isinstance(s, str):
-				self.asm = s
+				self.code = s
 
 	def __repr__(self):
 		return 'SubProgram({})'.format(self.format)

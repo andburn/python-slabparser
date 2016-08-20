@@ -102,7 +102,6 @@ def p_pass_section_state(p):
 					| IDENT STRING'''
 	p[0] = Pair(p[1], p[2])
 
-# TODO select vp and fp
 # for unpacked shaders (would be CGPROGRAM in regular shaderlab)
 def p_pass_section_program(p):
 	'''pass_section : PROGRAM STRING LBRACE subprograms RBRACE'''
@@ -200,13 +199,13 @@ def p_subprogram_def_bind(p):
 
 
 def p_subprogram_def_keywords(p):
-	'''subprogram_def : KEYWORDS LBRACE pkeywords RBRACE'''
-	p[0] = [p[3]]
+	'''subprogram_def : KEYWORDS LBRACE keywords RBRACE'''
+	p[0] = p[3]
 
 
-def p_pkeywords(p):
-	'''pkeywords : pkeywords STRING
-	             | STRING'''
+def p_keywords(p):
+	'''keywords : keywords STRING
+	            | STRING'''
 	if len(p) > 2:
 		p[0] = p[1]
 		p[1].append(p[2])
