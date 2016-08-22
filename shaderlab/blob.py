@@ -8,7 +8,6 @@ class Blob:
 
 	def extract_shaders(self):
 		subshaders = []
-		tags = []
 		index = []
 
 		num_subprograms = self.buf.read_int()
@@ -29,6 +28,7 @@ class Blob:
 			# the number of associated shader keywords
 			num_tags = b.read_int()
 			# get the tag strings
+			tags = []
 			for t in range(num_tags):
 				size = b.read_int()
 				tags.append(b.read_string(size))

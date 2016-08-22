@@ -46,8 +46,11 @@ class Parser:
 		return self.lib.MOJOSHADER_parse
 
 	def parse(self, data, profile="glsl"):
-		parse_data = self.mojo_parse(profile, "main", data, len(data),
-			None, 0, None, 0, None, None, None).contents
+		parse_data = self.mojo_parse(
+				profile.encode("ascii"), b'main', data, len(data),
+				None, 0, None, 0, None, None, None).contents
 		if parse_data.error_count > 0:
-			raise ParseFailureError("MojoShader parse failed")
+			# TODO show all errors, not just first
+			raise ParseFailureError("MojoShader parse failed: {}".format(
+					parse_data.errors[0].error))
 		return parse_data

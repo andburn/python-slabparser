@@ -166,11 +166,15 @@ class Program:
 class SubProgram:
 	def __init__(self, format, sections):
 		self.sections = sections
-		# TODO add other formats
-		if format.strip() == 'd3d9':
+		fmt = format.strip().lower()
+		if fmt == "d3d9":
 			self.format = ProgramFormat.D3D9
+		elif fmt == "d3d11":
+			self.format = ProgramFormat.D3D11
+		elif fmt == "opengl":
+			self.format = ProgramFormat.OPENGL
 		else:
-			raise NotImplementedError("{} is not implemented".format(format))
+			raise NotImplementedError("{} is an unknown format".format(format))
 
 		self.code = None
 		self.constants = []
