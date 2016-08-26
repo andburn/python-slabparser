@@ -1,5 +1,6 @@
 from enum import IntEnum
 
+
 keywords = {
 	"Shader": "SHADER",
 	"Properties": "PROPERTIES",
@@ -45,8 +46,11 @@ class Pair:
 		self.key = key
 		self.value = value
 
+	def __str__(self):
+		return "\"%s\"=\"%s\"" % (self.key, self.value)
+
 	def __repr__(self):
-		return 'Pair({},{})'.format(self.key, self.value)
+		return self.__str__()
 
 
 class RegisterEntry:
@@ -93,8 +97,19 @@ class Shader:
 						v = pg.subprograms
 		return v
 
-	def __repr__(self):
-		return 'Shader({})'.format(self.name)
+	def __str__(self):
+		pretty = []
+		pretty.append("Shader \"%s\" {\n" % (self.name))
+		pretty.append("Properties {\n")
+		for p in self.properties:
+			pretty.append("\t%s\n" % p)
+		pretty.append("}\n") # end props
+		for s in self.subshaders:
+			pretty.append("%s\n" % s)
+		pretty.append("%s\n" % (self.fallback))
+		pretty.append("%s\n" % (self.custom_editor))
+		pretty.append("}") # end shader
+		return "".join(pretty)
 
 
 # TODO types should be acutal types/classes
@@ -105,8 +120,8 @@ class Property:
 		self.type = pair[1]
 		self.value = value
 
-	def __repr__(self):
-		return 'Property({}, {}) = {}'.format(self.name, self.type, self.value)
+	def __str__(self):
+		return "%s (\"%s\", %s) = %s" % (self.name, self.description, self.type, self.value)
 
 
 class SubShader:
@@ -121,8 +136,18 @@ class SubShader:
 			elif isinstance(s, Pass):
 				self.passes.append(s)
 
-	def __repr__(self):
-		return 'SubShader() {}'.format(self.sections)
+	def __str__(self):
+		pretty = []
+		pretty.append("SubShader {\n")
+		pretty.append("\tTags {")
+		for t in self.tags:
+			pretty.append(" %s" % t)
+		pretty.append(" }\n") # end tags
+		for p in self.passes:
+			pretty.append("%s" % p)
+		pretty.append("}\n") # end subshader
+		return "".join(pretty)
+
 
 
 class Pass:
@@ -145,8 +170,21 @@ class Pass:
 		self.fog = merged.get('fog')
 		self.bind = merged.get('bind')
 
-	def __repr__(self):
-		return 'Pass() {}'.format(self.sections)
+	def __str__(self):
+		pretty = []
+		pretty.append("Pass {\n")
+		pretty.append("\tName \"%s\"\n" % (self.name))
+		pretty.append("\tTags {")
+		for t in self.tags:
+			pretty.append(" %s" % t)
+		pretty.append(" }\n") # end tags
+		pretty.append("\tFog {")
+		for f in self.fog:
+			pretty.append(" %s" % f)
+		pretty.append(" }\n") # end fog
+		pretty.append(str(self.state))
+		pretty.append("}\n") # end pass
+		return "".join(pretty)
 
 
 class Program:
@@ -198,13 +236,13 @@ class FallBack:
 	def __init__(self, value):
 		self.value = value
 
-	def __repr__(self):
-		return 'Fallback({})'.format(self.value)
+	def __str__(self):
+		return "Fallback \"%s\"" % self.value
 
 
 class CustomEditor:
 	def __init__(self, value):
 		self.value = value
 
-	def __repr__(self):
-		return 'CustomEditor({})'.format(self.value)
+	def __str__(self):
+		return "CustomEditor \"%s\"" % self.value
