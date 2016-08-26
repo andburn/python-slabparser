@@ -1,6 +1,86 @@
 import ctypes
 from ctypes import Structure, Union, POINTER
 from .parser import Parser
+from enum import IntEnum
+
+
+class UniformType(IntEnum):
+	UNKNOWN = -1,
+	FLOAT = 0,
+	INT = 1,
+	BOOL = 2
+
+
+class ShaderType(IntEnum):
+	UNKNOWN = 0,
+	PIXEL = 1,
+	VERTEX = 2,
+	GEOMETRY = 4,
+
+
+class SamplerType(IntEnum):
+	UNKNOWN = -1,
+	TWOD = 0,
+	CUBE = 1,
+	VOLUME = 2
+
+
+class Usage(IntEnum):
+	UNKNOWN = -1
+	POSITION = 0
+	BLENDWEIGHT = 1
+	BLENDINDICES = 2
+	NORMAL = 3
+	POINTSIZE = 4
+	TEXCOORD = 5
+	TANGENT = 6
+	BINORMAL = 7
+	TESSFACTOR = 8
+	POSITIONT = 9
+	COLOR = 10
+	FOG = 11
+	DEPTH = 12
+	SAMPLE = 13
+	TOTAL = 14
+
+
+class SymbolRegisterSet(IntEnum):
+	BOOL = 0
+	INT4 = 1
+	FLOAT4 = 2
+	SAMPLER = 3
+
+
+class SymbolClass(IntEnum):
+	SCALAR = 0
+	VECTOR = 1
+	MATRIX_ROWS = 2
+	MATRIX_COLUMNS = 3
+	OBJECT = 4
+	STRUCT = 5
+
+
+class SymbolType(IntEnum):
+	VOID = 0
+	BOOL = 1
+	INT = 2
+	FLOAT = 3
+	STRING = 4
+	TEXTURE = 5
+	TEXTURE1D = 6
+	TEXTURE2D = 7
+	TEXTURE3D = 8
+	TEXTURECUBE = 9
+	SAMPLER = 10
+	SAMPLER1D = 11
+	SAMPLER2D = 12
+	SAMPLER3D = 13
+	SAMPLERCUBE = 14
+	PIXELSHADER = 15
+	VERTEXSHADER = 16
+	PIXELFRAGMENT = 17
+	VERTEXFRAGMENT = 18
+	UNSUPPORTED = 19
 
 
 class Error(Structure):
