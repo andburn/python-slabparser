@@ -69,17 +69,7 @@ class Attribute(Structure):
 	]
 
 
-class SymbolTypeInfo(Structure):
-	_fields_ = [
-		("parameter_class", ctypes.c_int), # enum MOJOSHADER_symbolClass
-		("parameter_type", ctypes.c_int), # enum MOJOSHADER_symbolType
-		("rows", ctypes.c_uint),
-		("columns", ctypes.c_uint),
-		("elements", ctypes.c_uint),
-		("member_count", ctypes.c_uint)
-	]
-
-
+# Declare empty struct to avoid a circular reference
 class SymbolStructMember(Structure):
 	pass
 
@@ -94,12 +84,23 @@ class SymbolTypeInfo(Structure):
 		("member_count", ctypes.c_uint),
 		("members", POINTER(SymbolStructMember))
 	]
-	
-# TODO avoiding circular reference, but nasty
+
+
+# Assign SymbolStructMember fields after SymbolTypeInfo due to circular reference
 SymbolStructMember._fields_ = [
 	("name", ctypes.c_char_p),
-	("info", POINTER(SymbolTypeInfo))
+	("info", SymbolTypeInfo)
 ]
+
+
+class Symbol(Structure):
+	_fields_ = [
+		("name", ctypes.c_char_p),
+		("register_set", ctypes.c_int), # enum MOJOSHADER_symbolRegisterSet
+		("register_index", ctypes.c_uint),
+		("register_count", ctypes.c_uint),
+		("info", SymbolTypeInfo)
+	]
 
 
 class PreShaderOperand(Structure):
