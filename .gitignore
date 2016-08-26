@@ -1,3 +1,9 @@
+# Libraries
+/*.dll
+/*.pdb
+/*.lib
+
+# Project directories
 /ref
 /data
 
