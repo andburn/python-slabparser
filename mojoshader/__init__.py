@@ -243,3 +243,8 @@ class ParseData(Structure):
 		("free", ctypes.c_void_p), # MOJOSHADER_free free,
 		("malloc_data", ctypes.c_void_p)
 	]
+
+	def __str__(self):
+		if self.output_len > 0:
+			return ctypes.cast(self.output, ctypes.c_char_p).value.decode("utf-8")
+		return None

@@ -16,7 +16,6 @@ def tags_blob():
 
 def test_notags_blob(notags_blob):
 	assert len(notags_blob.shaders) == 2
-	print(notags_blob.shaders)
 	tag0, data0 = notags_blob.shaders[0]
 	tag1, data1 = notags_blob.shaders[1]
 	assert len(tag0) == 0
@@ -27,7 +26,6 @@ def test_notags_blob(notags_blob):
 
 def test_tags_blob(tags_blob):
 	assert len(tags_blob.shaders) == 2
-	print(tags_blob.shaders)
 	tag0, data0 = tags_blob.shaders[0]
 	tag1, data1 = tags_blob.shaders[1]
 	assert len(tag0) == 0
