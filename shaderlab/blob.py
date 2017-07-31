@@ -6,6 +6,10 @@ class Blob:
 		self.buf = BinaryReader(BytesIO(buf))
 		self.shaders = self.extract_shaders()
 
+	def is_supported(self, n):
+		# Assuming 9 & 11 are DX9 SM2.0 vertex & pixel shaders
+		return n == 9 or n == 11
+
 	def extract_shaders(self):
 		subshaders = []
 		index = []
@@ -20,10 +24,12 @@ class Blob:
 			b = BinaryReader(BytesIO(data))
 			# unknown, seems to be same for all shaders, unity id?
 			sid = b.read_int()
-			# shader type (9 = vs_2_0, 11 = ps_2_0)
-			# TODO look for vs/ps_1 shaders to check
+			# TODO add type to returned obj
 			stype = b.read_int()
-			# unknown series of bytes (12)
+			if not self.is_supported(stype):
+				print("Skipping unsupported shader type (%d)" % (stype))
+				continue
+			# TODO unknown series of bytes (12)
 			u2, u3, u4 = (b.read_int(), b.read_int(), b.read_int())
 			# the number of associated shader keywords
 			num_tags = b.read_int()
@@ -37,5 +43,5 @@ class Blob:
 			length = b.read_int()
 			# read bytecode and combine with tags
 			subshaders.append((tags, b.read(length)))
-			# TODO some other stuff at the end, not sure yet
+			# TODO some other stuff at the end, not sure what it is
 		return subshaders

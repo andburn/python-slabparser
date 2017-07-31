@@ -1,6 +1,6 @@
 from setuptools import setup
 
 setup(
-	name='chasm',
-	packages=['shaderlab']
+	name='slab',
+	packages=['shaderlab', 'mojoshader']
 )

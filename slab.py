@@ -29,7 +29,12 @@ with open(sys.argv[1], "rb") as fi:
 	b = Blob(data)
 
 	for i, (t, s) in enumerate(b.shaders):
-		m = p.parse(s)
+		try:
+			m = p.parse(s)
+		except Exception as e:
+			print("Parse failed on %d: %s" % (i, e))
+			continue
+
 		if m.error_count > 0:
 			print(m.errors.contents.error)
 		fname = "-".join(t)
