@@ -1,11 +1,4 @@
-# Libraries
-/*.dll
-/*.pdb
-/*.lib
-
-# Project directories
-/ref
-/data
+.vscode
 
 # PLY generated files
 parser.out

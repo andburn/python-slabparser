@@ -1,6 +1,6 @@
 import pytest
 import shaderlab
-from test_helper import *
+from helper import *
 
 
 @pytest.fixture

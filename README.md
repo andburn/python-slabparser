@@ -1,12 +1,21 @@
-# SLAB
+# SlabParser
 
-A (*work in progress*) python module to process unpacked unity shader assets into OpenGL.
+A python module to parse the metadata from Unity3D shaderlab text files.
+
+## Usage
+
+Use the `shaderlab.parse()` method to create an `shaderlab.Shader` object containing the shader meta data.
+
+```python
+import shaderlab
+
+with open(file, "r") as f:
+    data = f.read()
+
+slab = shaderlab.parse(data)
+```
 
 ## Requirements
-- Python >= 3.4
-- [MojoShader library](https://icculus.org/mojoshader/)
+- Python 3.x
+- *ply* package
 
-## Currently Supported Formats
-- Unity 5.3+ compiled shaders
-- DirectX9 ShaderModel 1.0 & 2.0
-- GLSL output

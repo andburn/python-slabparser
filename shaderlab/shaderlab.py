@@ -123,6 +123,9 @@ class Property:
 	def __str__(self):
 		return "%s (\"%s\", %s) = %s" % (self.name, self.description, self.type, self.value)
 
+	def __repr__(self):
+		return self.__str__()
+
 
 class SubShader:
 	def __init__(self, sections):
@@ -147,8 +150,6 @@ class SubShader:
 			pretty.append("%s" % p)
 		pretty.append("}\n") # end subshader
 		return "".join(pretty)
-
-
 
 class Pass:
 	def __init__(self, sections):
